@@ -1,0 +1,50 @@
+---
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: true
+AlignEscapedNewlines: Left
+AlignOperands: false
+AlignTrailingComments: true
+AllowAllArgumentsOnNextLine: false
+AllowAllConstructorInitializersOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: All
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: false
+AlwaysBreakTemplateDeclarations: 'Yes'
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: Always
+  AfterEnum: true
+  AfterExternBlock: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  BeforeCatch: true
+  BeforeElse: true
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: true
+ColumnLimit: 90
+DerivePointerAlignment: false
+IncludeBlocks: Merge
+IndentCaseLabels: true
+IndentWidth: 4
+JavaScriptQuotes: Single
+NamespaceIndentation: All
+PointerAlignment: Left
+ReflowComments: true
+SortIncludes: true
+SortUsingDeclarations: true
+SpaceAfterCStyleCast: false
+SpacesInContainerLiterals: true
+# TabWidth: 8
+UseTab: Never
