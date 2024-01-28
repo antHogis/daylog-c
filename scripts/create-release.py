@@ -57,7 +57,7 @@ def is_git_workdir_clean():
 
 def commit_header(version: str):
     subprocess.run(["git", "add", VERSION_HEADER_FILE])
-    subprocess.run(["git", "commit", "--message", "\"chore: %s\"" % version], capture_output=True)
+    subprocess.run(["git", "commit", "--message", "chore: %s" % version], capture_output=True)
 
 
 def determine_greatest_commit_type(commits: List[Dict]) -> CommitType:
