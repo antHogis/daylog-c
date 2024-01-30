@@ -7,6 +7,11 @@ import subprocess
 from typing import Dict
 from typing import List
 
+# TODO add option parsing
+# TODO add option for skipping commit and tag
+# TODO add option for ignoring dirty work directory
+# TODO add option for specifying commit message format
+
 
 VERSION_HEADER_FILE="./src/version.h"
 
@@ -90,11 +95,28 @@ def determine_version(last_tag: str, greatest_commit_type: CommitType) -> semver
 
 
 def write_version_to_headers(version: semver.Version):
+    write_data = []
+    
+    with open(VERSION_HEADER_FILE, "r") as file:
+        # this kind of repetitive, but it works well enough
+        for line in file.readlines():
+            if line.startswith("#define VERSION_MAJOR"):
+                line = "#define VERSION_MAJOR \"%s\"" % version.major
+            elif line.startswith("#define VERSION_MINOR"):
+                line = "#define VERSION_MINOR \"%s\"" % version.minor
+            elif line.startswith("#define VERSION_PATCH"):
+                line = "#define VERSION_PATCH \"%s\"" % version.patch
+            elif line.startswith("#define VERSION_PRERELEASE"):
+                line = "#define VERSION_PRERELEASE \"%s\"" % (version.prerelease or "")
+            
+            write_data.append(line if line[-1] != "\n" else line[0:-1])
+    
+    # add line break to end
+    if write_data[-1] != "":
+        write_data.append("")
+
     with open(VERSION_HEADER_FILE, "w") as file:
-        file.write("#define VERSION_MAJOR \"%s\"\n" % version.major)
-        file.write("#define VERSION_MINOR \"%s\"\n" % version.minor)
-        file.write("#define VERSION_PATCH \"%s\"\n" % version.patch)
-        file.write("#define VERSION_PRERELEASE \"%s\"\n" % (version.prerelease or ""))
+        file.write("\n".join([str(line) for line in write_data]))
 
 
 if not is_git_workdir_clean():
