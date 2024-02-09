@@ -10,7 +10,7 @@ BUILD_ARGS=(
     ./src/*.c
     -o ./build/daylog
     -g # enable debugging
-    -Wall -Wextra -Wpedantic
+    -Wall -Wextra -Wpedantic -Werror
     -Wformat=2 -Wno-unused-parameter -Wshadow
     -Wwrite-strings -Wstrict-prototypes -Wold-style-definition
     -Wredundant-decls -Wnested-externs -Wmissing-include-dirs
