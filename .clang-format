@@ -46,5 +46,5 @@ SortIncludes: true
 SortUsingDeclarations: true
 SpaceAfterCStyleCast: false
 SpacesInContainerLiterals: true
-# TabWidth: 8
-UseTab: Never
+TabWidth: 4
+UseTab: Always
