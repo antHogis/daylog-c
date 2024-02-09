@@ -106,8 +106,11 @@ def write_version_to_headers(version: semver.Version):
                 line = "#define VERSION_MINOR \"%s\"" % version.minor
             elif line.startswith("#define VERSION_PATCH"):
                 line = "#define VERSION_PATCH \"%s\"" % version.patch
-            elif line.startswith("#define VERSION_PRERELEASE"):
-                line = "#define VERSION_PRERELEASE \"%s\"" % (version.prerelease or "")
+            elif re.match(r"(//\\s*)?#define VERSION_PRERELEASE", line):
+                if version.prerelease:
+                    line = "// #define VERSION_PRERELEASE \"\""
+                else:
+                    line = "#define VERSION_PRERELEASE \"%s\"" % version.prerelease
             
             write_data.append(line if line[-1] != "\n" else line[0:-1])
     
