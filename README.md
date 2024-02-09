@@ -7,6 +7,7 @@ Rewrite of my simple time tracking CLI program in C.
 
 - bash
 - gcc
+- pcre2
 - python3
 
 ### Optional dependencies

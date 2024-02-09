@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Overrideable compilation options
+LIB_DIR="${LIB_DIR:-"/usr/lib"}"
+PCRE2_LIB="${PCRE2_LIB:-"pcre2-8"}"
+
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 pushd $SCRIPT_DIR > /dev/null
 pushd .. > /dev/null
@@ -8,6 +12,7 @@ mkdir -p build
 
 BUILD_ARGS=(
     ./src/*.c
+    -L "${LIB_DIR}" -l "${PCRE2_LIB}"
     -o ./build/daylog
     -g # enable debugging
     -Wall -Wextra -Wpedantic -Werror
