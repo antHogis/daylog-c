@@ -1,13 +1,17 @@
 #define PCRE2_CODE_UNIT_WIDTH 8
 
 #include "args.h"
+#include "daylog.h"
 #include <errno.h>
 #include <pcre2.h>
+#include <pwd.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 #include <time.h>
+#include <unistd.h>
 
 // Regex for a date string. The pattern is compiled once.
 static pcre2_code* date_str_regex;
@@ -81,22 +85,27 @@ bool validate_args(Arguments* args)
 		fprintf(stderr, "ERROR: date is not valid\n");
 		return false;
 	}
-	if ((args->use_csv || args->from_date != NULL || args->to_date != NULL) &&
-	    !(args->use_csv && args->from_date != NULL && args->to_date != NULL))
+	if ((args->use_csv || args->start_date != NULL || args->end_date != NULL) &&
+	    !(args->use_csv && args->start_date != NULL && args->end_date != NULL))
 	{
 		fprintf(stderr,
-		        "ERROR: If any of use_csv, from_date and to_date are defined, all must "
+		        "ERROR: If any of use_csv, start_date and end_date are defined, all must "
 		        "be defined\n");
 		return false;
 	}
-	if (args->from_date != NULL && !validate_date_str(args->from_date))
+	if (args->start_date != NULL && !validate_date_str(args->start_date))
 	{
-		fprintf(stderr, "ERROR: from_date is not valid\n");
+		fprintf(stderr, "ERROR: start_date is not valid\n");
 		return false;
 	}
-	if (args->to_date != NULL && !validate_date_str(args->to_date))
+	if (args->end_date != NULL && !validate_date_str(args->end_date))
 	{
-		fprintf(stderr, "ERROR: to_date is not valid\n");
+		fprintf(stderr, "ERROR: end_date is not valid\n");
+		return false;
+	}
+	if (args->file_path == NULL)
+	{
+		fprintf(stderr, "ERROR: file_path is null\n");
 		return false;
 	}
 
@@ -122,30 +131,51 @@ char* get_today_date(void)
 	return date_string;
 }
 
+// Get path to the daylog file (platform dependent)
+char* get_default_daylog_path(void)
+{
+	char* homedir;
+
+	if ((homedir = getenv("HOME")) == NULL)
+	{
+		homedir = getpwuid(geteuid())->pw_dir;
+	}
+
+	strcat(homedir, "/notes/day.log");
+
+	return homedir;
+}
+
 int main(int argc, char** argv)
 {
+	int ret_val = 0;
 	Arguments arguments;
+	ReadDayLogResult read_result;
 
 	// Default values.
-	arguments.date_arg  = get_today_date();
-	arguments.verbose   = false;
-	arguments.use_csv   = false;
-	arguments.from_date = NULL;
-	arguments.to_date   = NULL;
+	arguments.date_arg   = get_today_date();
+	arguments.verbose    = false;
+	arguments.use_csv    = false;
+	arguments.start_date = NULL;
+	arguments.end_date   = NULL;
+	arguments.file_path  = get_default_daylog_path();
 
 	parse_args(argc, argv, &arguments);
-	// printf("[ARGS]\nDate: %s\nUse CSV: %d\nFrom: %s\nTo: %s\n",
-	// 	   arguments.date_arg,
-	// 	   arguments.use_csv,
-	// 	   arguments.from_date,
-	// 	   arguments.to_date);
 
 	if (!validate_args(&arguments))
 	{
-		return EINVAL;
+		ret_val = EINVAL;
+		goto cleanup;
 	}
 
-	free(date_str_regex);
+	read_result = read_daylog(arguments.file_path);
+	ret_val     = read_result.error;
+	if (ret_val != 0)
+	{
+		goto cleanup;
+	}
 
-	return 0;
+cleanup:
+	free(date_str_regex);
+	return ret_val;
 }

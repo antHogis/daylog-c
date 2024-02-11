@@ -9,8 +9,9 @@ typedef struct
 	char* date_arg;
 	bool verbose;
 	bool use_csv;
-	char* from_date;
-	char* to_date;
+	char* start_date;
+	char* end_date;
+	char* file_path;
 } Arguments;
 
 // Parse CLI arguments.

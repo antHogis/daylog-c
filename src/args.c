@@ -20,8 +20,19 @@ static char args_doc[] = "date";
 static struct argp_option options[] = {
 	{"verbose", 'v', 0, 0, "Produce verbose output", 0},
 	{"csv", 'c', 0, 0, "Produce daylog output as CSV", 0},
-	{"from", 'f', "from_date", 0, "The beginning date of output", 0},
-	{"to", 't', "to_date", 0, "The end date of output", 0},
+	{"start",
+     's',
+     "start_date",
+     0,
+     "The beginning date of output in YYYY-MM-DD format",
+     0},
+	{"end", 'e', "end_date", 0, "The end date of output in YYYY-MM-DD format", 0},
+	{"file",
+     'f',
+     "file_path",
+     0,
+     "The path to the daylog file to read, $HOME/notes/daylog by default",
+     0},
 	{0}};
 
 // Parse a single option.
@@ -35,11 +46,14 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state)
 		case 'c':
 			arguments->use_csv = 1;
 			break;
-		case 'f':
-			arguments->from_date = arg;
+		case 's':
+			arguments->start_date = arg;
 			break;
-		case 't':
-			arguments->to_date = arg;
+		case 'e':
+			arguments->end_date = arg;
+			break;
+		case 'f':
+			arguments->file_path = arg;
 			break;
 		case 'v':
 			arguments->verbose = true;
