@@ -25,4 +25,3 @@ void destroy_string_vector(StringVector* vector);
 void push_back(StringVector* vector, char* str);
 
 #endif
-
