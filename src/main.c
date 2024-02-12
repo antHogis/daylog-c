@@ -1,3 +1,4 @@
+#include "regex.h"
 #define PCRE2_CODE_UNIT_WIDTH 8
 
 #include "args.h"
@@ -16,61 +17,8 @@
 // Regex for a date string. The pattern is compiled once.
 static pcre2_code* date_str_regex;
 
-// Initializes date string regex
-void init_date_str_regex(void)
-{
-	if (date_str_regex != NULL)
-	{
-		fprintf(stderr, "FATAL: date_str_regex not null when initializing");
-		exit(1);
-	}
-
-	PCRE2_SPTR pattern = (PCRE2_SPTR) "^\\d{4}-\\d{2}-\\d{2}$";
-	int errornumber;
-	PCRE2_SIZE erroroffset;
-	date_str_regex = pcre2_compile(pattern,
-	                               PCRE2_ZERO_TERMINATED,
-	                               0,
-	                               &errornumber,
-	                               &erroroffset,
-	                               NULL);
-
-	if (date_str_regex == NULL)
-	{
-		PCRE2_UCHAR buffer[256];
-		pcre2_get_error_message(errornumber, buffer, sizeof(buffer));
-		fprintf(stderr,
-		        "FATAL: PCRE2 compilation failed for date_str_regex pattern at offset "
-		        "%d: %s\n",
-		        (int)erroroffset,
-		        buffer);
-		exit(1);
-	}
-}
-
-// Returns true if string is a (sort of) valid date string
-int validate_date_str(char* date_str)
-{
-	if (!date_str_regex)
-	{
-		init_date_str_regex();
-	}
-
-	pcre2_match_data* match_data =
-		pcre2_match_data_create_from_pattern(date_str_regex, NULL);
-
-	int rc = pcre2_match(date_str_regex,
-	                     (PCRE2_SPTR)date_str,
-	                     strlen(date_str),
-	                     0,
-	                     0,
-	                     match_data,
-	                     NULL);
-
-	pcre2_match_data_free(match_data);
-
-	return rc >= 0;
-}
+// The pattern to define date_str_regex
+static const char* date_str_pattern = "^\\d{4}-\\d{2}-\\d{2}$";
 
 // Validate arguments
 bool validate_args(Arguments* args)
@@ -80,7 +28,7 @@ bool validate_args(Arguments* args)
 		fprintf(stderr, "FATAL: date_arg is null\n");
 		return false;
 	}
-	if (!validate_date_str(args->date_arg))
+	if (!match_regex(date_str_regex, args->date_arg))
 	{
 		fprintf(stderr, "ERROR: date is not valid\n");
 		return false;
@@ -93,12 +41,12 @@ bool validate_args(Arguments* args)
 		        "be defined\n");
 		return false;
 	}
-	if (args->start_date != NULL && !validate_date_str(args->start_date))
+	if (args->start_date != NULL && !match_regex(date_str_regex, args->start_date))
 	{
 		fprintf(stderr, "ERROR: start_date is not valid\n");
 		return false;
 	}
-	if (args->end_date != NULL && !validate_date_str(args->end_date))
+	if (args->end_date != NULL && !match_regex(date_str_regex, args->end_date))
 	{
 		fprintf(stderr, "ERROR: end_date is not valid\n");
 		return false;
@@ -151,6 +99,8 @@ int main(int argc, char** argv)
 	int ret_val = 0;
 	Arguments arguments;
 	ReadDayLogResult read_result;
+
+	date_str_regex = init_regex(date_str_pattern);
 
 	// Default values.
 	arguments.date_arg   = get_today_date();
