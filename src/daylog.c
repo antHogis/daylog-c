@@ -55,8 +55,9 @@ ReadDayLogResult read_daylog(char* file_path)
 			continue;
 		}
 
-		char* str_copy = malloc(sizeof(char) * buf_len);
-		strcpy(str_copy, buf);
+		// Copy characters and \0
+		char* str_copy = malloc(sizeof(char) * (buf_len + 1));
+		strncpy(str_copy, buf, buf_len + 1);
 		push_back(vector, str_copy);
 	}
 
