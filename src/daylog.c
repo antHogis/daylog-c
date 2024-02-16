@@ -301,5 +301,7 @@ DaySummary* parse_daylog(StringVector* daylog_lines, char* ref_date)
 		}
 	}
 
+	free(ref_year);
+
 	return summaries;
 }
