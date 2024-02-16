@@ -98,7 +98,8 @@ int main(int argc, char** argv)
 {
 	int ret_val = 0;
 	Arguments arguments;
-	ReadDayLogResult read_result;
+	StringVector* read_result;
+	DaySummary* summaries;
 
 	date_str_regex = init_regex(date_str_pattern);
 
@@ -118,14 +119,23 @@ int main(int argc, char** argv)
 		goto cleanup;
 	}
 
-	read_result = read_daylog(arguments.file_path);
-	ret_val     = read_result.error;
+	read_result = read_daylog(arguments.file_path, &ret_val);
 	if (ret_val != 0)
 	{
 		goto cleanup;
 	}
 
+	summaries = parse_daylog(read_result, arguments.date_arg);
+	for (size_t i = 0; i < MAX_DAYLOG_SIZE; ++i)
+	{
+		if (summaries[i].date != NULL) {
+		printf("summary date %s\n", summaries[i].date);
+		}
+	}
+
 cleanup:
 	free(date_str_regex);
+	free(summaries);
+	destroy_string_vector(read_result);
 	return ret_val;
 }

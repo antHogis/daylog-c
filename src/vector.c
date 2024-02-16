@@ -3,8 +3,8 @@
 #include <string.h>
 
 StringVector* init_string_vector(size_t capacity,
-                                 unsigned int capacity_multiplier,
-                                 unsigned int capacity_addend)
+                          unsigned int capacity_multiplier,
+                          unsigned int capacity_addend)
 {
 	StringVector* vector = malloc(sizeof(StringVector));
 	vector->_capacity    = capacity;
@@ -17,8 +17,17 @@ StringVector* init_string_vector(size_t capacity,
 
 	return vector;
 }
+void destroy_string_vector(StringVector* vector)
+{
+	for (size_t i = 0; i < vector->size; ++i)
+	{
+		free(vector->data[i]);
+	}
+	free(vector->data);
+	free(vector);
+}
 
-void push_back(StringVector* vector, char* str)
+void push_string_vector(StringVector* vector, char* str)
 {
 	if (vector->size == vector->_capacity)
 	{
