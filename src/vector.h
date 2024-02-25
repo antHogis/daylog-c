@@ -3,6 +3,10 @@
 
 #include <stddef.h>
 
+// -----------------------------
+// BaseVector
+// -----------------------------
+
 typedef struct
 {
 	size_t size;
@@ -11,6 +15,18 @@ typedef struct
 	int capacity_multiplier;
 	int capacity_addend;
 } BaseVector;
+
+
+BaseVector init_base_vector(size_t unit_size,
+                            size_t capacity,
+                            unsigned int capacity_multiplier,
+                            unsigned int capacity_addend);
+
+void* realloc_vector(BaseVector* vector_meta, void* vector_data);
+
+// -----------------------------
+// StringVector
+// -----------------------------
 
 typedef struct
 {
