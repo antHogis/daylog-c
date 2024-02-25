@@ -1,0 +1,5 @@
+alias build="clang ./src/*.c -o build/daylog -L/usr/lib -lpcre2-8 -Oz"
+alias dbuild="clang ./src/*.c -o build/daylog -L/usr/lib -lpcre2-8 -g -O0 -fsanitize=address"
+alias cfmt="clang-format src/* -i"
+alias run="./build/daylog"
+alias drun="lldb ./build/daylog"
