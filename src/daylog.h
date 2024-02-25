@@ -1,6 +1,7 @@
 #ifndef DAYLOG_DAYLOG_H
 #define DAYLOG_DAYLOG_H
 
+#include "task_summary.h"
 #include "vector.h"
 
 // Maximum size of entries in a DaySummary array
@@ -19,14 +20,6 @@ typedef struct
 	int error;
 } ReadDayLogResult;
 
-// Summary of a task on one day
-typedef struct
-{
-	// Name of the task
-	char* task_name;
-	// Sum of minutes used on task
-	int minutes;
-} TaskSummary;
 
 // Summary of all tasks on one day
 typedef struct
