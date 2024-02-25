@@ -19,6 +19,22 @@ BaseVector init_base_vector(size_t unit_size,
 	return base;
 }
 
+void* realloc_vector(BaseVector* vector_meta, void* vector_data)
+{
+	// Don't reallocate if not at full capacity
+	if (vector_meta->size < vector_meta->capacity)
+	{
+		return vector_data;
+	}
+
+	size_t new_capacity = (vector_meta->capacity + vector_meta->capacity_addend) *
+		vector_meta->capacity_multiplier;
+
+	vector_data           = realloc(vector_data, vector_meta->unit_size * new_capacity);
+	vector_meta->capacity = new_capacity;
+	return vector_data;
+}
+
 StringVector* init_string_vector(size_t capacity,
                                  unsigned int capacity_multiplier,
                                  unsigned int capacity_addend)
@@ -40,22 +56,6 @@ void destroy_string_vector(StringVector* vector)
 	}
 	free(vector->data);
 	free(vector);
-}
-
-void* realloc_vector(BaseVector* vector_meta, void* vector_data)
-{
-	// Don't reallocate if not at full capacity
-	if (vector_meta->size < vector_meta->capacity)
-	{
-		return vector_data;
-	}
-
-	size_t new_capacity = (vector_meta->capacity + vector_meta->capacity_addend) *
-		vector_meta->capacity_multiplier;
-
-	vector_data           = realloc(vector_data, vector_meta->unit_size * new_capacity);
-	vector_meta->capacity = new_capacity;
-	return vector_data;
 }
 
 void push_string_vector(StringVector* vector, char* val)
