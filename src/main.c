@@ -128,13 +128,20 @@ int main(int argc, char** argv)
 	summaries = parse_daylog(read_result, arguments.date_arg);
 	for (size_t i = 0; i < MAX_DAYLOG_SIZE; ++i)
 	{
-		if (summaries[i].date != NULL) {
-		printf("summary date %s\n", summaries[i].date);
+		if (summaries[i].date != NULL)
+		{
+			printf("summary date %s\n", summaries[i].date);
 		}
 	}
 
 cleanup:
+	free(arguments.date_arg);
 	free(date_str_regex);
+	for (size_t i = 0; i < MAX_DAYLOG_SIZE; ++i)
+	{
+		free(summaries[i].date);
+		free(summaries[i].task_summaries);
+	}
 	free(summaries);
 	destroy_string_vector(read_result);
 	return ret_val;

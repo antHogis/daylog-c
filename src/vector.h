@@ -5,13 +5,17 @@
 
 typedef struct
 {
-	char** data;
 	size_t size;
+	size_t unit_size;
+	size_t capacity;
+	int capacity_multiplier;
+	int capacity_addend;
+} BaseVector;
 
-	// private members
-	size_t _capacity;
-	int _capacity_multiplier;
-	int _capacity_addend;
+typedef struct
+{
+	char** data;
+	BaseVector base;
 } StringVector;
 
 StringVector* init_string_vector(size_t capacity,

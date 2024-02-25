@@ -38,7 +38,7 @@ StringVector* read_daylog(char* file_path, int* error)
 	const int MAX_LINE_LENGTH = 500;
 	bool truncating           = false;
 
-	StringVector* vector = init_string_vector(5000, 2, 0);
+	StringVector* vector = init_string_vector(500, 2, 0);
 
 	while (true)
 	{
@@ -245,7 +245,7 @@ cleanup:
 // Parses daylog from file data
 DaySummary* parse_daylog(StringVector* daylog_lines, char* ref_date)
 {
-	if (daylog_lines == NULL || daylog_lines->size == 0)
+	if (daylog_lines == NULL || daylog_lines->base.size == 0)
 	{
 		// TODO error handling
 		return NULL;
@@ -259,6 +259,7 @@ DaySummary* parse_daylog(StringVector* daylog_lines, char* ref_date)
 
 	char* ref_year = malloc(sizeof(char) * YEAR_STRING_LENGTH);
 	strncpy(ref_year, ref_date, YEAR_STRING_LENGTH - 1);
+	ref_year[YEAR_STRING_LENGTH - 1] = '\0';
 
 	if (date_begin_regex == NULL)
 	{
@@ -273,22 +274,9 @@ DaySummary* parse_daylog(StringVector* daylog_lines, char* ref_date)
 	DaySummary* summaries = calloc(MAX_DAYLOG_SIZE, sizeof(DaySummary));
 	int summary_index     = -1;
 
-	for (char* line = daylog_lines->data[0];
-	     line <= daylog_lines->data[daylog_lines->size - 1];
-	     ++line)
+	for (int line_num = 0; line_num <= daylog_lines->base.size - 1; ++line_num)
 	{
-		// if (match_regex(date_begin_regex, line))
-		// {
-		// 	// TODO extract month and day
-		// 	// TODO check they don't exceed 12 and 31
-		// 	int month = 12;
-		// 	int day   = 31;
-
-		// 	summary_index                 = calc_summary_index(day, month);
-		// 	summaries[summary_index].date = (char*)"2024-12-31";
-		// 	continue;
-		// }
-
+		char* line = daylog_lines->data[line_num];
 		if (summary_index >= 0 &&
 		    !check_task_entry_match(line, &summaries[summary_index]))
 		{
