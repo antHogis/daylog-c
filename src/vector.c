@@ -1,7 +1,5 @@
 #include "vector.h"
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 BaseVector init_base_vector(size_t unit_size,
                             size_t capacity,
@@ -35,58 +33,10 @@ void* realloc_vector(BaseVector* vector_meta, void* vector_data)
 	return vector_data;
 }
 
-StringVector* init_string_vector(size_t capacity,
-                                 unsigned int capacity_multiplier,
-                                 unsigned int capacity_addend)
+void free_int(int data)
 {
-	StringVector* vector = malloc(sizeof(StringVector));
-	vector->data         = malloc(sizeof(char*) * capacity);
-
-	vector->base =
-		init_base_vector(sizeof(char*), capacity, capacity_multiplier, capacity_addend);
-
-	return vector;
+	// no-op
 }
 
-void destroy_string_vector(StringVector* vector)
-{
-	for (size_t i = 0; i < vector->base.size; ++i)
-	{
-		free(vector->data[i]);
-	}
-	free(vector->data);
-	free(vector);
-}
-
-void push_string_vector(StringVector* vector, char* val)
-{
-	vector->data                    = realloc_vector(&vector->base, vector->data);
-	vector->data[vector->base.size] = val;
-	vector->base.size++;
-}
-
-IntVector* init_int_vector(size_t capacity,
-                           unsigned int capacity_multiplier,
-                           unsigned int capacity_addend)
-{
-	IntVector* vector = malloc(sizeof(IntVector));
-	vector->data         = malloc(sizeof(int) * capacity);
-
-	vector->base =
-		init_base_vector(sizeof(int), capacity, capacity_multiplier, capacity_addend);
-
-	return vector;
-}
-
-void destroy_int_vector(IntVector* vector)
-{
-	free(vector->data);
-	free(vector);
-}
-
-void push_int_vector(IntVector* vector, int val)
-{
-	vector->data                    = realloc_vector(&vector->base, vector->data);
-	vector->data[vector->base.size] = val;
-	vector->base.size++;
-}
+DEFINE_VECTOR(char*, StringVector, string_vector, free)
+DEFINE_VECTOR(int, IntVector, int_vector, free_int)
