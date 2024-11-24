@@ -12,4 +12,8 @@ typedef struct
 	int minutes;
 } TaskSummary;
 
+DECLARE_VECTOR(TaskSummary, TaskSummaryVector, task_summary_vector)
+
+void add_minutes_to_task(TaskSummaryVector* vector, char* task, int minutes);
+
 #endif

@@ -1,4 +1,5 @@
 #include "regex.h"
+#include "task_summary.h"
 #define PCRE2_CODE_UNIT_WIDTH 8
 
 #include "args.h"
@@ -94,7 +95,19 @@ char* get_default_daylog_path(void)
 	return homedir;
 }
 
-int display_day_summary(DaySummary* summaries, char* date)
+void print_minutes_as_hm(int total_minutes)
+{
+	int hours   = total_minutes / 60;
+	int minutes = total_minutes % 60;
+	printf("%dh", hours);
+	if (minutes > 0)
+	{
+		printf("%dm", minutes);
+	}
+}
+
+// Print out the summary of a single date in the daylog
+int display_day_summary(DaySummary* day_summaries, char* date)
 {
 	// Date is expected to be in format YYYY-MM-DD
 	int month = (date[5] - '0') * 10 + (date[6] - '0');
@@ -102,26 +115,35 @@ int display_day_summary(DaySummary* summaries, char* date)
 
 	size_t index = calc_summary_index(day, month);
 
-	if (summaries[index].date == NULL)
+	if (day_summaries[index].date == NULL)
 	{
-		fprintf(stderr, "No daylog entry found for %d.%d\n", day, month);
+		fprintf(stderr, "No daylog entry found for %s\n", date);
 		return 1;
 	}
 
-	int hours   = summaries[index].sum_minutes / 60;
-	int minutes = summaries[index].sum_minutes % 60;
-
-	printf("Date %s, time %dh", summaries[index].date, hours);
-	if (minutes > 0)
+	if (day_summaries[index].task_summaries == NULL)
 	{
-		printf("%dm", minutes);
+		fprintf(stderr, "No task summaries for date %s", date);
+		return 0;
 	}
+
+	for (size_t i = 0; i < day_summaries[index].task_summaries->base.size; i++)
+	{
+		TaskSummary task_summary = day_summaries[index].task_summaries->data[i];
+		printf("%s\t\t", task_summary.task_name);
+		print_minutes_as_hm(task_summary.minutes);
+		printf("\n");
+	}
+
+	printf("-------------------------------------------\n");
+	printf("TOTAL ");
+	print_minutes_as_hm(day_summaries[index].sum_minutes);
 	printf("\n");
-	// TODO print task summaries
 
 	return 0;
 }
 
+// Output CSV from the daylog in the specified date range
 int output_csv(void)
 {
 	fprintf(stderr, "CSV output not yet implemented");
