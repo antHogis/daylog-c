@@ -2,6 +2,7 @@
 #include "version.h"
 #include <argp.h>
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef VERSION_PRERELEASE
 const char* argp_program_version =
@@ -9,6 +10,8 @@ const char* argp_program_version =
 #else
 const char* argp_program_version = VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH;
 #endif
+
+#define DATE_ARG_LENGTH 11
 
 // Program documentation.
 static char doc[] = "daylog - a time tracking summation utility";
@@ -62,7 +65,12 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state)
 			if (state->arg_num == 0)
 			{
 				free(arguments->date);
-				arguments->date = arg;
+
+				// Don't use arg directly, malloc a new string. The caller expects
+				// to be responsible for freeing the date string.
+				arguments->date = malloc(sizeof(char) * DATE_ARG_LENGTH);
+				strncpy(arguments->date, arg, DATE_ARG_LENGTH - 1);
+				arguments->date[DATE_ARG_LENGTH - 1] = '\0';
 			}
 			else
 			{
