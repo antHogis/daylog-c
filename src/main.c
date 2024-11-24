@@ -130,7 +130,16 @@ int main(int argc, char** argv)
 	{
 		if (summaries[i].date != NULL)
 		{
-			printf("summary date %s\n", summaries[i].date);
+			int hours   = summaries[i].sum_minutes / 60;
+			int minutes = summaries[i].sum_minutes % 60;
+			printf("summary date %s time %dh", summaries[i].date, hours);
+
+			if (minutes > 0)
+			{
+				printf("%dm", minutes);
+			}
+
+			printf("\n");
 		}
 	}
 

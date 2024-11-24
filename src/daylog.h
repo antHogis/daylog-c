@@ -26,8 +26,10 @@ typedef struct
 {
 	// The date of the day, YYYY-MM-DD format
 	char* date;
-	// Summary ot the day's tasks
+	// Summary of the day's tasks
 	TaskSummary* task_summaries;
+	// Summary of total minutes
+	int sum_minutes;
 } DaySummary;
 
 // Read daylog file into an array of strings

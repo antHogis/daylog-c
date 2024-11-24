@@ -158,15 +158,16 @@ static bool check_task_entry_match(const char* line, DaySummary* summary)
 	}
 
 	sum_minutes = end_minutes - start_minutes;
+	summary->sum_minutes += sum_minutes;
 
-	// 	printf("Task id %s Range %s-%s => %u end %u = %d\n",
-	// 	       task_id,
-	// 	       start_str,
-	// 	       end_str,
-	// 	       start_minutes,
-	// 	       end_minutes,
-	// 	       sum_minutes);
-	// TODO add task entry to summary
+	// printf("Task id %s Range %s-%s => %u end %u = %d\n",
+	//        task_id,
+	//        start_str,
+	//        end_str,
+	//        start_minutes,
+	//        end_minutes,
+	//        sum_minutes);
+	//  TODO add task entry to summary
 
 cleanup:
 	pcre2_match_data_free(match_data);
