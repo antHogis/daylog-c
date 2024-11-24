@@ -30,7 +30,7 @@ bool validate_args(Arguments* args)
 	}
 	if (!match_regex(date_str_regex, args->date))
 	{
-		fprintf(stderr, "ERROR: date is not valid\n");
+		fprintf(stderr, "ERROR: date %s is not valid\n", args->date);
 		return false;
 	}
 	if ((args->use_csv || args->start_date != NULL || args->end_date != NULL) &&
