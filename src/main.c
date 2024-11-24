@@ -94,6 +94,40 @@ char* get_default_daylog_path(void)
 	return homedir;
 }
 
+int display_day_summary(DaySummary* summaries, char* date)
+{
+	// Date is expected to be in format YYYY-MM-DD
+	int month = (date[5] - '0') * 10 + (date[6] - '0');
+	int day   = (date[8] - '0') * 10 + (date[9] - '0');
+
+	size_t index = calc_summary_index(day, month);
+
+	if (summaries[index].date == NULL)
+	{
+		fprintf(stderr, "No daylog entry found for %d.%d\n", day, month);
+		return 1;
+	}
+
+	int hours   = summaries[index].sum_minutes / 60;
+	int minutes = summaries[index].sum_minutes % 60;
+
+	printf("Date %s, time %dh", summaries[index].date, hours);
+	if (minutes > 0)
+	{
+		printf("%dm", minutes);
+	}
+	printf("\n");
+	// TODO print task summaries
+
+	return 0;
+}
+
+int output_csv(void)
+{
+	fprintf(stderr, "CSV output not yet implemented");
+	return 1;
+}
+
 int main(int argc, char** argv)
 {
 	int ret_val = 0;
@@ -126,21 +160,14 @@ int main(int argc, char** argv)
 	}
 
 	summaries = parse_daylog(read_result, arguments.date_arg);
-	for (size_t i = 0; i < MAX_DAYLOG_SIZE; ++i)
+
+	if (arguments.use_csv)
 	{
-		if (summaries[i].date != NULL)
-		{
-			int hours   = summaries[i].sum_minutes / 60;
-			int minutes = summaries[i].sum_minutes % 60;
-			printf("summary date %s time %dh", summaries[i].date, hours);
-
-			if (minutes > 0)
-			{
-				printf("%dm", minutes);
-			}
-
-			printf("\n");
-		}
+		ret_val = output_csv();
+	}
+	else
+	{
+		ret_val = display_day_summary(summaries, arguments.date_arg);
 	}
 
 cleanup:

@@ -32,6 +32,9 @@ typedef struct
 	int sum_minutes;
 } DaySummary;
 
+// Calculates index of summary array from date
+size_t calc_summary_index(int day, int month);
+
 // Read daylog file into an array of strings
 StringVector* read_daylog(char* file_path, int* error);
 
