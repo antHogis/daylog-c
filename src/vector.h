@@ -40,6 +40,24 @@ StringVector* init_string_vector(size_t capacity,
 
 void destroy_string_vector(StringVector* vector);
 
-void push_string_vector(StringVector* vector, char* str);
+void push_string_vector(StringVector* vector, char* val);
+
+// -----------------------------
+// IntVector
+// -----------------------------
+
+typedef struct
+{
+	int* data;
+	BaseVector base;
+} IntVector;
+
+IntVector* init_int_vector(size_t capacity,
+                                 unsigned int capacity_multiplier,
+                                 unsigned int capacity_addend);
+
+void destroy_int_vector(IntVector* vector);
+
+void push_int_vector(IntVector* vector, int val);
 
 #endif

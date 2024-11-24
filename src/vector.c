@@ -60,7 +60,33 @@ void destroy_string_vector(StringVector* vector)
 
 void push_string_vector(StringVector* vector, char* val)
 {
-	vector->data = realloc_vector(&vector->base, vector->data);
+	vector->data                    = realloc_vector(&vector->base, vector->data);
+	vector->data[vector->base.size] = val;
+	vector->base.size++;
+}
+
+IntVector* init_int_vector(size_t capacity,
+                           unsigned int capacity_multiplier,
+                           unsigned int capacity_addend)
+{
+	IntVector* vector = malloc(sizeof(IntVector));
+	vector->data         = malloc(sizeof(int) * capacity);
+
+	vector->base =
+		init_base_vector(sizeof(int), capacity, capacity_multiplier, capacity_addend);
+
+	return vector;
+}
+
+void destroy_int_vector(IntVector* vector)
+{
+	free(vector->data);
+	free(vector);
+}
+
+void push_int_vector(IntVector* vector, int val)
+{
+	vector->data                    = realloc_vector(&vector->base, vector->data);
 	vector->data[vector->base.size] = val;
 	vector->base.size++;
 }
