@@ -106,14 +106,19 @@ void print_minutes_as_hm(int total_minutes)
 	}
 }
 
-// Print out the summary of a single date in the daylog
-int display_day_summary(DaySummary* day_summaries, char* date)
+size_t date_to_summary_index(char* date)
 {
 	// Date is expected to be in format YYYY-MM-DD
 	int month = (date[5] - '0') * 10 + (date[6] - '0');
 	int day   = (date[8] - '0') * 10 + (date[9] - '0');
 
-	size_t index = calc_summary_index(day, month);
+	return calc_summary_index(day, month);
+}
+
+// Print out the summary of a single date in the daylog
+int display_day_summary(DaySummary* day_summaries, char* date)
+{
+	size_t index = date_to_summary_index(date);
 
 	if (day_summaries[index].date == NULL)
 	{
@@ -144,10 +149,41 @@ int display_day_summary(DaySummary* day_summaries, char* date)
 }
 
 // Output CSV from the daylog in the specified date range
-int output_csv(void)
+int output_csv(DaySummary* day_summaries, char* start_date, char* end_date)
 {
-	fprintf(stderr, "CSV output not yet implemented");
-	return 1;
+	size_t start_index = date_to_summary_index(start_date);
+	size_t end_index   = date_to_summary_index(end_date);
+
+	for (size_t day_i = start_index; day_i <= end_index; day_i++)
+	{
+		if (day_summaries[day_i].task_summaries == NULL)
+		{
+			continue;
+		}
+
+		DaySummary* day_summary = &day_summaries[day_i];
+
+		char day[3];
+		char month[3];
+		strncpy(day, &day_summary->date[8], 2);
+		strncpy(month, &day_summary->date[5], 2);
+		day[2]   = '\0';
+		month[2] = '\0';
+
+		for (size_t task_i = 0; task_i < day_summary->task_summaries->base.size; task_i++)
+		{
+			// TODO convert tasks with non JIRA ticket id to "other"
+			TaskSummary* task_summary = &day_summary->task_summaries->data[task_i];
+
+			printf("%s.%s,%s,%.2f\n",
+			       day,
+			       month,
+			       task_summary->task_name,
+			       task_summary->minutes / 60.0);
+		}
+	}
+
+	return 0;
 }
 
 int main(int argc, char** argv)
@@ -185,7 +221,7 @@ int main(int argc, char** argv)
 
 	if (arguments.use_csv)
 	{
-		ret_val = output_csv();
+		ret_val = output_csv(summaries, arguments.start_date, arguments.end_date);
 	}
 	else
 	{
