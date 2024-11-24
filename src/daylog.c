@@ -274,7 +274,7 @@ DaySummary* parse_daylog(StringVector* daylog_lines, char* ref_date)
 	DaySummary* summaries = calloc(MAX_DAYLOG_SIZE, sizeof(DaySummary));
 	int summary_index     = -1;
 
-	for (int line_num = 0; line_num <= daylog_lines->base.size - 1; ++line_num)
+	for (size_t line_num = 0; line_num <= daylog_lines->base.size - 1; ++line_num)
 	{
 		char* line = daylog_lines->data[line_num];
 		if (summary_index >= 0 &&
