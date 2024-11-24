@@ -6,7 +6,7 @@
 // The arguments and options of daylog
 typedef struct
 {
-	char* date_arg;
+	char* date;
 	bool verbose;
 	bool use_csv;
 	char* start_date;

@@ -61,8 +61,8 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state)
 		case ARGP_KEY_ARG:
 			if (state->arg_num == 0)
 			{
-				free(arguments->date_arg);
-				arguments->date_arg = arg;
+				free(arguments->date);
+				arguments->date = arg;
 			}
 			else
 			{

@@ -23,12 +23,12 @@ static const char* date_str_pattern = "^\\d{4}-\\d{2}-\\d{2}$";
 // Validate arguments
 bool validate_args(Arguments* args)
 {
-	if (args->date_arg == NULL)
+	if (args->date == NULL)
 	{
 		fprintf(stderr, "FATAL: date_arg is null\n");
 		return false;
 	}
-	if (!match_regex(date_str_regex, args->date_arg))
+	if (!match_regex(date_str_regex, args->date))
 	{
 		fprintf(stderr, "ERROR: date is not valid\n");
 		return false;
@@ -138,7 +138,7 @@ int main(int argc, char** argv)
 	date_str_regex = init_regex(date_str_pattern);
 
 	// Default values.
-	arguments.date_arg   = get_today_date();
+	arguments.date       = get_today_date();
 	arguments.verbose    = false;
 	arguments.use_csv    = false;
 	arguments.start_date = NULL;
@@ -159,7 +159,7 @@ int main(int argc, char** argv)
 		goto cleanup;
 	}
 
-	summaries = parse_daylog(read_result, arguments.date_arg);
+	summaries = parse_daylog(read_result, arguments.date);
 
 	if (arguments.use_csv)
 	{
@@ -167,11 +167,11 @@ int main(int argc, char** argv)
 	}
 	else
 	{
-		ret_val = display_day_summary(summaries, arguments.date_arg);
+		ret_val = display_day_summary(summaries, arguments.date);
 	}
 
 cleanup:
-	free(arguments.date_arg);
+	free(arguments.date);
 	free(date_str_regex);
 	for (size_t i = 0; i < MAX_DAYLOG_SIZE; ++i)
 	{
