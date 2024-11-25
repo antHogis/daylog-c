@@ -21,6 +21,12 @@ static pcre2_code* date_str_regex;
 // The pattern to define date_str_regex
 static const char* date_str_pattern = "^\\d{4}-\\d{2}-\\d{2}$";
 
+// Regex for a JIRA task id
+static pcre2_code* task_id_regex;
+
+// The pattern to define task_id_regex;
+static const char* task_id_pattern = "^\\w+-\\d+$";
+
 // Validate arguments
 bool validate_args(Arguments* args)
 {
@@ -170,16 +176,29 @@ int output_csv(DaySummary* day_summaries, char* start_date, char* end_date)
 		day[2]   = '\0';
 		month[2] = '\0';
 
+		int other_minutes = 0;
+
 		for (size_t task_i = 0; task_i < day_summary->task_summaries->base.size; task_i++)
 		{
-			// TODO convert tasks with non JIRA ticket id to "other"
 			TaskSummary* task_summary = &day_summary->task_summaries->data[task_i];
 
-			printf("%s.%s,%s,%.2f\n",
-			       day,
-			       month,
-			       task_summary->task_name,
-			       task_summary->minutes / 60.0);
+			if (!match_regex(task_id_regex, task_summary->task_name))
+			{
+				other_minutes += task_summary->minutes;
+			}
+			else
+			{
+				printf("%s.%s,%s,%.2f\n",
+				       day,
+				       month,
+				       task_summary->task_name,
+				       task_summary->minutes / 60.0);
+			}
+		}
+
+		if (other_minutes > 0)
+		{
+			printf("%s.%s,%s,%.2f\n", day, month, "other", other_minutes / 60.0);
 		}
 	}
 
@@ -194,6 +213,7 @@ int main(int argc, char** argv)
 	DaySummary* summaries;
 
 	date_str_regex = init_regex(date_str_pattern);
+	task_id_regex  = init_regex(task_id_pattern);
 
 	// Default values.
 	arguments.date       = get_today_date();
@@ -231,6 +251,7 @@ int main(int argc, char** argv)
 cleanup:
 	free(arguments.date);
 	free(date_str_regex);
+	free(task_id_regex);
 	for (size_t i = 0; i < MAX_DAYLOG_SIZE; ++i)
 	{
 		free(summaries[i].date);
