@@ -1,0 +1,4 @@
+- Plug up memory leaks. Task summaries are likely not freed correctly
+- Allow user to input date in DD.MM format 
+- Refactor to use some kind of date object instead of strings
+- Fix segfault when invalid date given
