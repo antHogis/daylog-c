@@ -138,10 +138,23 @@ int display_day_summary(DaySummary* day_summaries, char* date)
 		return 0;
 	}
 
+	int longest_task_name = 0;
+	for (size_t i = 0; i < day_summaries[index].task_summaries->base.size; i++)
+	{
+		int len = strlen(day_summaries[index].task_summaries->data[i].task_name);
+
+		if (len > longest_task_name)
+		{
+			longest_task_name = len;
+		}
+	}
+
 	for (size_t i = 0; i < day_summaries[index].task_summaries->base.size; i++)
 	{
 		TaskSummary task_summary = day_summaries[index].task_summaries->data[i];
-		printf("%s\t\t", task_summary.task_name);
+		int divider_len          = longest_task_name - strlen(task_summary.task_name) + 4;
+
+		printf("%s%*c", task_summary.task_name, divider_len, ' ');
 		print_minutes_as_hm(task_summary.minutes);
 		printf("\n");
 	}
