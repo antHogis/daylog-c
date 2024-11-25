@@ -24,12 +24,16 @@ The times are written in the `HHmm` format
 
 Important to note
 - The definition of the date must be exactly in the format given.
+    - The number of dashes is significant. 4 dashes and space before the date,
+      and a space and 40 dashes after
 - The dates must be written in the `MM.DD` format. So January 2nd would be `02.01`.
 - You can go over to the next day by adding the time to 2400
     - `2330-2530` results in 2 hours counted
     - This is still counted toward the day of the daylog entry
 - Anything that's not recognized as a task id will be summed with the "other"
   description when outputting as csv
+- Anything in the daylog that does not define an entry or a line with time of the entry is ignored.
+  So you may freely add comments etc.
 
 ### Using daylog
 
