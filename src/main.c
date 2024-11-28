@@ -138,7 +138,7 @@ int display_day_summary(DaySummary* day_summaries, char* date)
 		return 0;
 	}
 
-	int longest_task_name = 0;
+	int longest_task_name = strlen("TOTAL");
 	for (size_t i = 0; i < day_summaries[index].task_summaries->base.size; i++)
 	{
 		int len = strlen(day_summaries[index].task_summaries->data[i].task_name);
@@ -159,8 +159,9 @@ int display_day_summary(DaySummary* day_summaries, char* date)
 		printf("\n");
 	}
 
+	int divider_len = longest_task_name - strlen("TOTAL") + 4;
 	printf("-------------------------------------------\n");
-	printf("TOTAL ");
+	printf("TOTAL%*c", divider_len, ' ');
 	print_minutes_as_hm(day_summaries[index].sum_minutes);
 	printf("\n");
 
