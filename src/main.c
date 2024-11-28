@@ -266,12 +266,22 @@ cleanup:
 	free(arguments.date);
 	free(date_str_regex);
 	free(task_id_regex);
-	for (size_t i = 0; i < MAX_DAYLOG_SIZE; ++i)
+
+	if (summaries != NULL)
 	{
-		free(summaries[i].date);
-		free(summaries[i].task_summaries);
+		for (size_t i = 0; i < MAX_DAYLOG_SIZE; ++i)
+		{
+			free(summaries[i].date);
+			// TODO we leak memory here
+			free(summaries[i].task_summaries);
+		}
+		free(summaries);
 	}
-	free(summaries);
-	destroy_string_vector(read_result);
+
+	if (read_result != NULL)
+	{
+		destroy_string_vector(read_result);
+	}
+
 	return ret_val;
 }
