@@ -272,8 +272,10 @@ cleanup:
 		for (size_t i = 0; i < MAX_DAYLOG_SIZE; ++i)
 		{
 			free(summaries[i].date);
-			// TODO we leak memory here
-			free(summaries[i].task_summaries);
+			if (summaries[i].task_summaries != NULL)
+			{
+				destroy_task_summary_vector(summaries[i].task_summaries);
+			}
 		}
 		free(summaries);
 	}
