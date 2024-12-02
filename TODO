@@ -1,2 +1,3 @@
-- Allow user to input date in DD.MM format 
+- Allow user to input date in DD.MM format
 - Refactor to use some kind of date object instead of strings
+- Segfault if only -c option is given
