@@ -2,8 +2,8 @@
 
 #include "daylog.h"
 #include "regex.h"
-#include "vector.h"
 #include "task_summary.h"
+#include "vector.h"
 #include <errno.h>
 #include <pcre2.h>
 #include <stdbool.h>
@@ -160,8 +160,9 @@ static bool check_task_entry_match(const char* line, DaySummary* summary)
 
 	sum_minutes = end_minutes - start_minutes;
 	summary->sum_minutes += sum_minutes;
-	
-	if (summary->task_summaries == NULL) {
+
+	if (summary->task_summaries == NULL)
+	{
 		summary->task_summaries = init_task_summary_vector(20, 2, 0);
 	}
 

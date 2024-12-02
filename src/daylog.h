@@ -20,7 +20,6 @@ typedef struct
 	int error;
 } ReadDayLogResult;
 
-
 // Summary of all tasks on one day
 typedef struct
 {
